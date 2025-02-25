@@ -206,3 +206,9 @@ The console should display:
 Server is running on port 3000.
 Connected to MongoDB successfully
 ```
+
+## **Sequence Diagram**
+
+Shows how requesting and receiving data works for each endpoint
+
+<img src="./README images/sequenceDiagram.png" alt="Sequence Diagram" width="800"/>
