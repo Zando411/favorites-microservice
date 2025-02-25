@@ -50,22 +50,22 @@ def remove_favorite(user_id, favorite_item):
 
 # Example Usage
 user_id = "1"
-favorite_item = "Mario Kart"
+favorite_item = "Minecraft"
 
 print("\nAdding a favorite item...")
-add_favorite(user_id, "Minecraft")
+add_favorite(user_id, "Mario Kart")
 
 print("\nAdding a favorite item...")
-add_favorite(user_id, "Minecraft")
+add_favorite(user_id, "Mario Kart")
 
 print("\nAdding a favorite item...")
-add_favorite(user_id, "Minecraft")
-
-print("\nAdding a favorite item...")
-add_favorite(user_id, favorite_item)
+add_favorite(user_id, "Mario Kart")
 
 print("\nAdding a favorite item...")
 add_favorite(user_id, "Tetris")
+
+print("\nAdding a favorite item...")
+add_favorite(user_id, favorite_item)
 
 print("\nRetrieving favorite items...")
 get_favorites(user_id)
