@@ -27,6 +27,30 @@ const db = client.db('favoritesDB');
 const collection = db.collection('favorites');
 
 // endpoints
+app.post('/api/favorites/newUser', async (req, res) => {
+  const { userID } = req.body;
+
+  // Validate input
+  if (!userID) {
+    return res.status(400).json({ error: 'Missing userID' });
+  }
+
+  try {
+    const existingUser = await collection.findOne({ _id: userID });
+
+    if (existingUser) {
+      return res.status(400).json({ error: 'User already exists' });
+    }
+
+    const result = await collection.insertOne({ _id: userID, favorites: [] });
+    console.log(result);
+    res.json({ message: 'User created successfully' });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Error creating user' });
+  }
+});
+
 app.post('/api/favorites', async (req, res) => {
   const { userID, favorite } = req.body;
 
