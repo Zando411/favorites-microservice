@@ -1,214 +1,173 @@
 # Favorites Microservice
 
-This microservice allows users to store, retrieve, and remove their favorite
-items. It provides a REST API with `POST`, `GET`, and `DELETE` endpoints.
+This microservice handles operations related to user favorites in the
+**CatCall** application. It provides RESTful endpoints to add, remove, retrieve,
+and initialize a user's favorites list.
 
-## **Communication Contract**
+## Notes
 
-This microservice follows a **REST API architecture** and requests must be sent
-as **JSON**.
+- This service is intended to run as part of the CatCall application and does
+  not need to be run independently.
+- MongoDB must be running and accessible using the URI specified in your `.env`
+  file to run locally.
+- The user's ID can be any string, whether it be an email, UUID, or simply a
+  number. The favorite can also be any string. In the CatCall app I use and
+  emails for the user ID and cat UUID's for the favorite item.
+
+## Base Configuration
 
 - **Base URL:** `http://localhost:<PORT>/api/favorites`
 - **Default Port:** `3000`
-- **To change the port:** Set `PORT=<chosen port>` in a `.env` file
-  ([Environment Variables](#environment-variables)).
+- **Change the Port:** Set `PORT=<your_port>` in a `.env` file (see
+  `.env.example` for a template).
 - **Content Type:** `application/json`
 - **Response Format:** `JSON`
 
-## **How to Programmatically REQUEST Data**
+## Endpoints
 
-This section explains how to interact with the microservice by making requests.
+> Note: If an unexpected error occurs on the server (e.g. database error), a
+> `500 Internal Server Error` will be returned with a generic error message.
 
-### **Add a Favorite Game**
+### `POST /api/favorites`
 
-- **Endpoint:** `POST /api/favorites`
-- **Description:** Adds a game to a user's favorites list.
-- **Request Body Example:**
+**Add a favorite item to a user's list.**
 
-  ```json
-  { "userID": "1", "gameID": "Minecraft" }
-  ```
+**Request Body:**
 
-- **Example Python API call:**
-
-  ```python
-  import requests
-
-  PORT = 3000 # Change this if needed
-  URL = f"http://localhost:{PORT}/api/favorites"
-
-  response = requests.post(URL, json={"userID": "1", "gameID": "Minecraft"})
-  print(response.json())
-  ```
-
----
-
-### **Remove a Favorite Game**
-
-- **Endpoint:** `DELETE /api/favorites`
-- **Description:** Removes a game from a user's favorites list.
-- **Request Body Example:**
-
-  ```json
-  { "userID": "1", "gameID": "Minecraft" }
-  ```
-
-- **Example Python API call:**
-
-  ```python
-  import requests
-
-  PORT = 3000 # Change this if needed
-  URL = f"http://localhost:{PORT}/api/favorites"
-
-  response = requests.delete(URL, json={"userID": "1", "gameID": "Minecraft"})
-  print(response.json())
-  ```
-
----
-
-### **Retrieve Favorite Games**
-
-- **Endpoint:** `GET /api/favorites/{userID}`
-- **Description:** Retrieves all favorite games for a given user.
-- **Example Python API call:**
-
-  ```python
-  user_id = "1"
-  PORT = 3000 # Change this if needed
-  URL = f"http://localhost:{PORT}/api/favorites/{user_id}"
-
-  response = requests.get(URL)
-  print(response.json())
-  ```
-
----
-
-## **How to Programmatically RECEIVE Data**
-
-This section explains how data is received from the microservice.
-
-### **Response for Adding a Favorite Game**
-
-- **Endpoint:** `POST /api/favorites`
-- **Example Success Response:**
-
-  ```json
-  { "message": "Game added to favorites" }
-  ```
-
-- **Example Error Response:**
-
-  ```json
-  { "error": "Game is already in favorites" }
-  ```
-
----
-
-### **Response for Removing a Favorite Game**
-
-- **Endpoint:** `DELETE /api/favorites`
-- **Example Success Response:**
-
-  ```json
-  { "message": "Game removed from favorites" }
-  ```
-
-- **Example Error Response:**
-
-  ```json
-  { "error": "Game not found in favorites" }
-  ```
-
----
-
-### **Response for Retrieving Favorite Games**
-
-- **Endpoint:** `GET /api/favorites/{userID}`
-- **Example Success Response (if user has favorites):**
-
-  ```json
-  { "favorites": ["Minecraft", "Tetris", "Zelda"] }
-  ```
-
-- **Example Success Response (if user has no favorites):**
-
-  ```json
-  { "favorites": [] }
-  ```
-
-- **Example Error Response (if user not found):**
-
-  ```json
-  { "error": "User not found" }
-  ```
-
----
-
-## **MongoDB Setup**
-
-This microservice requires **MongoDB Community Edition** to be installed and
-running locally. If you do not have MongoDB installed, follow the steps below
-
-1. **Go to the official MongoDB download page and download the MongoDB Server**:
-   [MongoDB Community Edition Download](https://www.mongodb.com/try/download/community)
-2. Select the version applicable to your system
-3. Run installer and tick the "Install MongoDB Compass" option
-
-   > Personally I used MongoDB compass to help visualize and setup the database
-   > easily, if you have never used MongoDB before, I would recommend doing
-   > this.
-
-4. Once compass has been installed, open it
-5. On the left, you should see `CONNECTIONS`. If you have no connections on the
-   left, create a new connection with the default options.
-
-    <img src="./README images/compass.webp" alt="MongoDB compass" width="800"/>
-
-6. Once you have a connection, hover it on the left and click connect. You are
-   now connected to your database!
-7. Add your port to .env as described below
-
-## **Environment Variables**
-
-This microservice is configured to use a .env file with the dotenv package. To
-support this, you will need to create a .env file with the information
-necessary.
-
-1. Create a `.env` file in the root directory
-2. Add the following environment variables:
-
-   ```sh
-   MONGO_URI=mongodb://localhost:27017 # default provided by compass, if you set your own custom port update it here
-   PORT=3000 # can be changed to whatever port you'd like
-   ```
-
-3. Done! Your program should be ready to run
-
-## **Running this Microservice Locally**
-
-Make sure you have [Node.js](https://nodejs.org/en) installed and you are
-connected to MongoDB, then run:
-
-```sh
-npm install
+```json
+{
+  "userID": "user@example.com",
+  "favorite": "13b930c1-bb52-4616-822e-c9ca7d219dca"
+}
 ```
 
-To install all needed packages. Then, start the Node.js server by running:
+**Success Response:**
 
-```sh
+```json
+{ "message": "Item added to favorites" }
+```
+
+**Error Response:**
+
+```json
+{ "error": "Item is already in favorites" }
+```
+
+---
+
+### `DELETE /api/favorites`
+
+**Remove a favorite game from a user's list.**
+
+**Request Body:**
+
+```json
+{
+  "userID": "user@example.com",
+  "favorite": "13b930c1-bb52-4616-822e-c9ca7d219dca"
+}
+```
+
+**Success Response:**
+
+```json
+{ "message": "Item not found in favorites" }
+```
+
+**Error Response:**
+
+```json
+{ "error": "Item not found in favorites" }
+```
+
+---
+
+### `GET /api/favorites/:userID`
+
+**Retrieve a user's full list of favorite games.**
+
+**Response (with favorites):**
+
+```json
+{
+  "favorites": [
+    "13b930c1-bb52-4616-822e-c9ca7d219dca",
+    "f9461501-93b8-4cb4-96ae-faeabca8e02c",
+    "91ade6cc-2a35-485b-874e-b8b1117ae99d"
+  ]
+}
+```
+
+**Response (no favorites):**
+
+```json
+{ "favorites": [] }
+```
+
+**Error Response:**
+
+```json
+{ "error": "User not found" }
+```
+
+---
+
+### `POST /api/favorites/newUser`
+
+**Create an empty favorites list for a new user (e.g. on signup).**
+
+**Request Body:**
+
+```json
+{ "userID": "user@example.com" }
+```
+
+**Success Response:**
+
+```json
+{ "message": "User created successfully" }
+```
+
+**Error Response:**
+
+```json
+{ "error": "User already exists" }
+```
+
+---
+
+## Environment Setup To Run Locally
+
+1. Copy the example environment file:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Modify the values in `.env` as needed:
+
+   **Example `.env` contents:**
+
+   ```env
+   PORT=3000
+   MONGO_URI=mongodb://localhost:27017
+   ```
+
+---
+
+## Running Locally (Without Docker)
+
+Make sure [Node.js](https://nodejs.org/) is installed and MongoDB is running.
+Then:
+
+```bash
+npm install
 npm start
 ```
 
-The console should display:
+You should see output similar to:
 
 ```
 Server is running on port 3000.
 Connected to MongoDB successfully
 ```
-
-## **Sequence Diagram**
-
-Shows how requesting and receiving data works for each endpoint
-
-<img src="./README images/sequenceDiagram.png" alt="Sequence Diagram" width="800"/>
