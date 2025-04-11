@@ -62,9 +62,9 @@ app.post('/api/favorites', async (req, res) => {
   try {
     const user = await collection.findOne({ _id: userID });
 
-    // Check if the game is already in the user's favorites
+    // Check if the item is already in the user's favorites
     if (user && user.favorites && user.favorites.includes(favorite)) {
-      return res.status(400).json({ error: 'Game is already in favorites' });
+      return res.status(400).json({ error: 'Item is already in favorites' });
     }
 
     const result = await collection.updateOne(
@@ -74,7 +74,7 @@ app.post('/api/favorites', async (req, res) => {
     );
 
     console.log(result);
-    res.json({ message: 'Game added to favorites' });
+    res.json({ message: 'Item added to favorites' });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Error inserting favorite' });
@@ -114,7 +114,7 @@ app.delete('/api/favorites', async (req, res) => {
     const user = await collection.findOne({ _id: userID });
 
     if (!user || !user.favorites || !user.favorites.includes(favorite)) {
-      return res.status(404).json({ error: 'Game not found in favorites' });
+      return res.status(404).json({ error: 'Item not found in favorites' });
     }
 
     const result = await collection.updateOne(
@@ -123,7 +123,7 @@ app.delete('/api/favorites', async (req, res) => {
     );
 
     console.log(result);
-    res.json({ message: 'Game removed from favorites' });
+    res.json({ message: 'Item removed from favorites' });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: 'Error removing favorite' });
