@@ -6,18 +6,18 @@ and initialize a user's favorites list.
 
 ## Notes
 
-- This service is intended to run as part of the CatCall application and does
-  not need to be run independently.
-- MongoDB must be running and accessible using the URI specified in your `.env`
-  file to run locally.
-- The user's ID can be any string, whether it be an email, UUID, or simply a
-  number. The favorite can also be any string. In the CatCall app I use and
-  emails for the user ID and cat UUID's for the favorite item.
+- This service is designed to run as part of the CatCall application and is not
+  intended for standalone production use.
+- MongoDB must be running and accessible using the URI defined in your `.env`
+  file.
+- User IDs and favorites can be any string. In the CatCall app, user IDs are
+  emails and favorites are cat UUIDs.
 
 ## Base Configuration
 
 - **Base URL:** `http://localhost:<PORT>/api/favorites`
 - **Default Port:** `3000`
+- **Port in CatCall:** Determined by `PORT_<SERVICE>` in the root `.env`
 - **Change the Port:** Set `PORT=<your_port>` in a `.env` file (see
   `.env.example` for a template).
 - **Content Type:** `application/json`
@@ -25,8 +25,17 @@ and initialize a user's favorites list.
 
 ## Endpoints
 
-> Note: If an unexpected error occurs on the server (e.g. database error), a
+> All endpoints expect and return JSON. If a server or database error occurs, a
 > `500 Internal Server Error` will be returned with a generic error message.
+
+| Method | Route                    | Description                               |
+| ------ | ------------------------ | ----------------------------------------- |
+| POST   | `/api/favorites`         | Add a favorite cat for a user             |
+| DELETE | `/api/favorites`         | Remove a cat from a user's favorites      |
+| GET    | `/api/favorites/:userID` | Retrieve a user's full list of favorites  |
+| POST   | `/api/favorites/newUser` | Create an empty favorites list for a user |
+
+---
 
 ### `POST /api/favorites`
 
@@ -171,3 +180,26 @@ You should see output similar to:
 Server is running on port 3000.
 Connected to MongoDB successfully
 ```
+
+---
+
+## Running with Docker
+
+You can also run this microservice in isolation using Docker:
+
+### 1. Build the image
+
+```bash
+docker build -t favorites-microservice .
+```
+
+### 2. Run the container
+
+```bash
+docker run -p 3000:3000 --env-file .env favorites-microservice
+```
+
+> ⚠️ Make sure your `.env` file is in the root directory and includes
+> `MONGO_URI`.
+
+---
